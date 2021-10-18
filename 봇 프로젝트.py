@@ -69,9 +69,22 @@ async def 다시재생(ctx):
 
 @bot.command()
 async def 정지(ctx):
-	if bot.voice_clients[0].is_playing():
-         bot.voice_clients[0].stop()  
+    if bot.voice_clients[0].is_playing():
+        bot.voice_clients[0].stop()
+    else:
+        await ctx.send("재생 중이지 않습니다.")   
 
-
+@bot.command()
+async def 음악(ctx, *, url):
+    YDL_OPTIONS = {'format': 'bestaudio','noplaylist':'True'}
+    FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
+    if not vc.is_playing():
+        with YoutubeDL(YDL_OPTIONS) as ydl:
+            info = ydl.extract_info(url, download=False)
+        URL = info['formats'][0]['url']
+        vc.play(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS))
+        await ctx.send(embed = discord.Embed(title= "음악 재생", description = "지금 재생하고 있는 노래는 " + url + "입니다.", color = 0x00ff00))
+    else:
+        await ctx.send("이미 재생하고 있습니다.")       
                    
-bot.run('ODk4ODgzMzA1NDAxODk2OTgx.YWqsUA.f684AevY7gr5xQRT4o96behTy0k')
+bot.run('ODk4ODgzMzA1NDAxODk2OTgx.YWqsUA.ywA_n0KYlknBkSRKTMPJcBTCM-I')
