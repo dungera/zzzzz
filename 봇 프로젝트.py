@@ -10,6 +10,8 @@ from discord.utils import get
 from discord import FFmpegPCMAudio
 import asyncio
 import time
+from selenium.webdriver.chrome.service import Service
+service=Service(r"C:\Users\jaemi\OneDrive\문서\재민\깃헙\zzzzz\zzzzz")
 
 bot = commands.Bot(command_prefix='!')
 
@@ -75,16 +77,31 @@ async def 정지(ctx):
         await ctx.send("재생 중이지 않습니다.")   
 
 @bot.command()
-async def 음악(ctx, *, url):
-    YDL_OPTIONS = {'format': 'bestaudio','noplaylist':'True'}
-    FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
+async def 재생(ctx, *, msg):
     if not vc.is_playing():
+        global entireText
+        YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'True'}
+        FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
+        driver = webdriver.Chrome(executable_path=r'C:\Users\jaemi\OneDrive\문서\재민\깃헙\zzzzz\zzzzz')    
+        chromedriver_dir = r"C:\Users\jaemi\OneDrive\문서\재민\깃헙\zzzzz\zzzzz"
+        driver = webdriver.Chrome(chromedriver_dir)
+        driver.get("https://www.youtube.com/results?search_query="+msg+"+lyrics")
+        source = driver.page_source
+        bs = bs4.BeautifulSoup(source, 'lxml')
+        entire = bs.find_all('a', {'id': 'video-title'})
+        entireNum = entire[0]
+        entireText = entireNum.text.strip()
+        musicurl = entireNum.get('href')
+        url = 'https://www.youtube.com'+musicurl 
+
         with YoutubeDL(YDL_OPTIONS) as ydl:
             info = ydl.extract_info(url, download=False)
         URL = info['formats'][0]['url']
+        await ctx.send(embed = discord.Embed(title= "노래 재생", description = "현재 " + entireText + "을(를) 재생하고 있습니다.", color = 0x00ff00))
         vc.play(FFmpegPCMAudio(URL, **FFMPEG_OPTIONS))
-        await ctx.send(embed = discord.Embed(title= "음악 재생", description = "지금 재생하고 있는 노래는 " + url + "입니다.", color = 0x00ff00))
     else:
-        await ctx.send("이미 재생하고 있습니다.")       
+        await ctx.send("이미 노래가 재생 중이라 노래를 재생할 수 없습니다.")
+
+
                    
-bot.run('ODk4ODgzMzA1NDAxODk2OTgx.YWqsUA.ywA_n0KYlknBkSRKTMPJcBTCM-I')
+bot.run('ODk4ODgzMzA1NDAxODk2OTgx.YWqsUA.vKqoRuPLaccH7V9h87KzSVkKDGU')
