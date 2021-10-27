@@ -82,10 +82,8 @@ async def 재생(ctx, *, msg):
         global entireText
         YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist':'True'}
         FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
-        driver = webdriver.Chrome(executable_path=r'C:\Users\jaemi\OneDrive\문서\재민\깃헙\zzzzz\zzzzz')    
-        chromedriver_dir = r"C:\Users\jaemi\OneDrive\문서\재민\깃헙\zzzzz\zzzzz"
-        driver = webdriver.Chrome(chromedriver_dir)
-        driver.get("https://www.youtube.com/results?search_query="+msg+"+lyrics")
+        driver = webdriver.Chrome('chromedriver')
+        driver.get("https://www.youtube.com/results?search_query="+msg+"+lyrics");
         source = driver.page_source
         bs = bs4.BeautifulSoup(source, 'lxml')
         entire = bs.find_all('a', {'id': 'video-title'})
@@ -103,5 +101,6 @@ async def 재생(ctx, *, msg):
         await ctx.send("이미 노래가 재생 중이라 노래를 재생할 수 없습니다.")
 
 
-                   
-bot.run('ODk4ODgzMzA1NDAxODk2OTgx.YWqsUA.vKqoRuPLaccH7V9h87KzSVkKDGU')
+
+
+bot.run('ODk4ODgzMzA1NDAxODk2OTgx.YWqsUA.3dfD2GmSmF_q2xJlSKiG8f7aRPM')
